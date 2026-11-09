@@ -1,0 +1,76 @@
+{%- comment -%}
+  NPLG looks pair: two full-length look photos side by side (no gap), each linking to
+  its product, with a caption under each and line-drawn orchids in the side margins.
+  Two orchids tuck partly behind the photos. Orchids hide below 860px.
+  Styles: assets/nplg-custom.css (.nplg-looks*). Not yet tested in the live theme.
+{%- endcomment -%}
+<section class="nplg-looks" aria-label="{{ section.settings.aria_label | escape }}">
+  <div class="nplg-looks__frame">
+    {%- if section.settings.show_orchids -%}
+      {%- for i in (1..6) -%}
+        {%- capture orchid_class -%}nplg-looks__orchid nplg-looks__orchid--{{ i }}{%- endcapture -%}
+        {% render 'nplg-orchid', class: orchid_class %}
+      {%- endfor -%}
+    {%- endif -%}
+
+    <div class="nplg-looks__pair">
+      {%- for block in section.blocks limit: 2 -%}
+        {%- assign look_product = block.settings.product -%}
+        {%- assign look_url = look_product.url | default: block.settings.link -%}
+        <a class="nplg-looks__photo" href="{{ look_url | default: '#' }}" {{ block.shopify_attributes }}>
+          {%- if block.settings.image != blank -%}
+            {{ block.settings.image | image_url: width: 1600 | image_tag:
+              widths: '400, 600, 800, 1000, 1200, 1600',
+              sizes: '(min-width: 860px) 50vw, 50vw',
+              loading: 'lazy',
+              alt: block.settings.image.alt | default: look_product.title }}
+          {%- else -%}
+            {{ 'lifestyle-1' | placeholder_svg_tag: 'placeholder-svg' }}
+          {%- endif -%}
+        </a>
+      {%- endfor -%}
+    </div>
+
+    <div class="nplg-looks__captions">
+      {%- for block in section.blocks limit: 2 -%}
+        {%- assign look_product = block.settings.product -%}
+        <a class="nplg-looks__caption" href="{{ look_product.url | default: block.settings.link | default: '#' }}">
+          {{- block.settings.caption | default: look_product.title | escape -}}
+        </a>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "NPLG looks pair",
+  "tag": "div",
+  "class": "nplg-looks-section",
+  "settings": [
+    { "type": "text", "id": "aria_label", "label": "Accessible label", "default": "Looks from Collection FW26" },
+    { "type": "checkbox", "id": "show_orchids", "label": "Show orchid graphics", "default": true }
+  ],
+  "blocks": [
+    {
+      "type": "look",
+      "name": "Look",
+      "limit": 2,
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Full-length look photo" },
+        { "type": "product", "id": "product", "label": "Product" },
+        { "type": "url", "id": "link", "label": "Link (if no product)" },
+        { "type": "text", "id": "caption", "label": "Caption (defaults to product title)" }
+      ]
+    }
+  ],
+  "max_blocks": 2,
+  "presets": [{
+    "name": "NPLG looks pair",
+    "blocks": [
+      { "type": "look", "settings": { "caption": "Gracia Top in Black" } },
+      { "type": "look", "settings": { "caption": "Morrocoy Top in Vainilla Venezuela Print" } }
+    ]
+  }]
+}
+{% endschema %}

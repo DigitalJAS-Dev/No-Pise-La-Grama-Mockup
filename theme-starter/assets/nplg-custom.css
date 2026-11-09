@@ -1,0 +1,193 @@
+/* ==========================================================================
+   No Pise La Grama: Round 1 site improvements, starter styles
+   Load after the theme CSS (e.g. in layout/theme.liquid, after custom.css).
+   Fonts (HV Harietta, Californian FB) are already loaded by the theme's custom.css.
+   Selectors marked VERIFY are guesses at Palo Alto 9.2 markup: check them against
+   the real theme before relying on them.
+   ========================================================================== */
+
+:root {
+  --nplg-ink: #2B2B2B;
+  --nplg-body: #45413C;
+  --nplg-muted: #5E5A55;
+  --nplg-cream: #F1EADF;     /* header, intro panel, footer */
+  --nplg-promo: #E3D8C6;     /* announcement bar */
+  --nplg-stone: #F3EFEA;     /* archive band, product image ground */
+  --nplg-hairline: #E4E0DA;
+}
+
+/* --------------------------------------------------------------------------
+   1. Fonts
+   The live custom.css lists HV-Harietta-Regular.woff2 first, but that file is
+   an old PostScript Type 1 font that browsers can't read; they fall back to the
+   .woff. Replace the .woff2 in Files with a real WOFF2 (or drop it from the src
+   list). Harietta's built-in word space is 0.5em, about double normal: tighten it.
+   -------------------------------------------------------------------------- */
+h1, h2, h3, h4, h5, h6,
+.h0, .h1, .h2, .h3, .h4, .h5, .h6,
+.heading, .section-header__title, .title {
+  word-spacing: -0.22em;
+}
+
+/* Optional: once Californian FB Bold is licensed and uploaded to Files,
+   uncomment and point the menu at it instead of using a faked bold. */
+/*
+@font-face {
+  font-family: "californian-fb";
+  src: url("https://cdn.shopify.com/s/files/1/0326/9361/6775/files/californian-fb-bold.woff2") format("woff2");
+  font-weight: 700; font-style: normal; font-display: swap;
+}
+*/
+
+/* --------------------------------------------------------------------------
+   2. Header
+   Settings first (see BUILD-SPEC): Alignment "Links | Logo | Icons", transparent
+   header on, sticky header on, country selector on, menu weight Normal.
+   -------------------------------------------------------------------------- */
+
+/* Menu links: 18px Californian, title case, underline only on hover / open. VERIFY */
+.header__menu .navlink,
+.header__desktop .navlink {
+  font-size: 18px;
+  letter-spacing: 0.01em;
+  text-transform: none;
+  border-bottom: 2px solid transparent;
+  text-decoration: none;
+}
+.header__menu .navlink:hover,
+.header__menu .navlink[aria-expanded="true"] {
+  border-bottom-color: currentColor;
+}
+
+/* Breathing room under the announcement bar. VERIFY */
+.header__wrapper { padding-top: 18px; padding-bottom: 14px; }
+
+/* Homepage, transparent state: soft shade so the white logo and menu stay
+   readable over the light gallery wall in the banner photo. VERIFY the
+   transparent-state class Palo Alto adds to the header. */
+.template-index .header--transparent:not(.header--sticky-active)::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 100%;
+  background: linear-gradient(rgba(0, 0, 0, 0.38), rgba(0, 0, 0, 0));
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* --------------------------------------------------------------------------
+   3. Homepage: intro text + category tiles read as one panel
+   Give both sections the same cream color scheme in the editor; then: VERIFY
+   -------------------------------------------------------------------------- */
+.template-index .nplg-tiles .collection-item,
+.template-index .nplg-tiles .collection-card {
+  background: #FFFFFF;
+  padding: 24px 24px 28px;
+}
+.template-index .nplg-tiles .collection-item__image img {
+  object-fit: contain;
+  aspect-ratio: 2 / 3;
+}
+.template-index .nplg-tiles .collection-item__title {
+  font-size: 13px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  text-align: center;
+  border-bottom: 1px solid transparent;
+  padding-bottom: 4px;
+  display: inline-block;
+}
+.template-index .nplg-tiles .collection-item:hover .collection-item__title {
+  border-bottom-color: var(--nplg-ink);
+}
+
+/* --------------------------------------------------------------------------
+   4. NPLG looks pair (sections/nplg-looks.liquid)
+   -------------------------------------------------------------------------- */
+.nplg-looks {
+  position: relative;
+  overflow: hidden;
+  padding: 120px clamp(20px, 4vw, 56px);
+  background: #FFFFFF;
+  color: var(--nplg-ink);
+}
+.nplg-looks__frame {
+  position: relative;
+  margin: 0 auto;
+  /* keep ~190px of margin each side for the orchids, never wider than 1000px */
+  max-width: max(min(560px, 100%), min(1000px, calc(100% - 380px)));
+}
+.nplg-looks__pair {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0;
+}
+.nplg-looks__photo { display: block; }
+.nplg-looks__photo img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 0.64;          /* full length, head to toe */
+  object-fit: cover;
+  object-position: center 60%;
+}
+.nplg-looks__captions {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  padding-top: 14px;
+}
+.nplg-looks__caption {
+  font-size: 16px;
+  color: var(--nplg-body);
+  text-decoration: none;
+}
+.nplg-looks__caption:hover { text-decoration: underline; }
+
+.nplg-looks__orchid {
+  position: absolute;
+  z-index: 0;
+  color: var(--nplg-ink);
+  pointer-events: none;
+}
+/* outer margins */
+.nplg-looks__orchid--1 { left: -210px; top: -40px;  width: 150px; transform: rotate(-14deg); }
+.nplg-looks__orchid--2 { left: -150px; bottom: 70px; width: 92px;  transform: rotate(18deg) scaleX(-1); }
+.nplg-looks__orchid--3 { right: -200px; bottom: 20px; width: 140px; transform: rotate(10deg) scaleX(-1); }
+.nplg-looks__orchid--4 { right: -140px; top: -10px;  width: 84px;  transform: rotate(-24deg); }
+/* tucked partly behind the photos */
+.nplg-looks__orchid--5 { left: -78px;  top: 50%; width: 130px; transform: rotate(-30deg); }
+.nplg-looks__orchid--6 { right: -84px; top: 20%; width: 120px; transform: rotate(28deg) scaleX(-1); }
+
+@media (max-width: 860px) {
+  .nplg-looks { padding: 64px 20px; }
+  .nplg-looks__orchid { display: none; }
+}
+
+/* --------------------------------------------------------------------------
+   5. As seen in (section-press): no rules above or below. VERIFY
+   -------------------------------------------------------------------------- */
+.template-index .press,
+.template-index .section-press { border-top: 0; border-bottom: 0; }
+
+/* --------------------------------------------------------------------------
+   6. Instagram grid (section-social-gallery): tight, contained. Use the section's
+   own spacing setting first; this is the fallback. VERIFY
+   -------------------------------------------------------------------------- */
+.template-index .social-gallery__grid,
+.template-index .section-social-gallery .grid {
+  gap: 0;
+  max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* --------------------------------------------------------------------------
+   7. Product page: no collection overline, calmer title. VERIFY
+   -------------------------------------------------------------------------- */
+.template-product .product__subheading,
+.template-product .product__collection { display: none; }
+.template-product .product__title { font-size: 32px; line-height: 1.15; }
